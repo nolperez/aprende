@@ -28,11 +28,12 @@ function loadComponent(containerId, filePath) {
 
 // Carga una página dinámica
 function loadPage(pageName) {
-  $.get(`templates/${pageName}.html`)
+  $.get(`templates/pages/${pageName}.html`)
     .done(html => {
       $('#content').html(html);
       
       // Actualiza URL sin recargar (SPA)
+      // history.pushState(null, '', `${pageName}`);
       history.pushState(null, '', `#${pageName}`);
     })
     .fail(() => {
