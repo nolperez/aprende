@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro de Usuario</title>
+  <style>
+    body { font-family: Arial; margin: 40px; }
+    form { max-width: 400px; margin: auto; }
+    input { display: block; width: 100%; padding: 10px; margin: 10px 0; }
+    button { padding: 10px 20px; }
+  </style>
+</head>
+<body>
+  <h2>Registro de Usuario</h2>
+  <form id="registroForm">
+    <input type="text" id="nombre" placeholder="Nombre" required>
+    <input type="email" id="correo" placeholder="Correo electrónico" required>
+    <button type="submit">Registrar</button>
+  </form>
+
+  <p id="mensaje"></p>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+    // ⚠️ REEMPLAZA con tus propias claves de Supabase:
+    const supabaseUrl = 'https://nxsjuywalvqioskffjyp.supabase.co'
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54c2p1eXdhbHZxaW9za2ZmanlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxNzQ5NDIsImV4cCI6MjA2NTc1MDk0Mn0.bRJy5JUpPrBRmHIGmoHpHJKzHRf1_cQho76d2KD13jk'
+    const supabase = createClient(supabaseUrl, supabaseKey)
+
+    const form = document.getElementById('registroForm')
+    const mensaje = document.getElementById('mensaje')
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault()
+
+      const nombre = document.getElementById('nombre').value
+      const correo = document.getElementById('correo').value
+
+      const { data, error } = await supabase
+        .from('users')
+        .insert([{ nombre, correo }])
+
+      if (error) {
+        mensaje.textContent = 'Error al registrar: ' + error.message
+        mensaje.style.color = 'red'
+      } else {
+        mensaje.textContent = 'Usuario registrado con éxito.'
+        mensaje.style.color = 'green'
+        form.reset()
+      }
+    })
+  </script>
+</body>
+</html>
