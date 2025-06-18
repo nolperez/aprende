@@ -10,6 +10,12 @@
 
   <p id="mensaje"></p>
 
+  <!-- Añade esta sección para mostrar los registros -->
+  <div id="listaRegistros">
+    <h2>Usuarios Registrados</h2>
+    <ul id="usuariosLista"></ul>
+  </div>
+
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
@@ -18,32 +24,108 @@
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54c2p1eXdhbHZxaW9za2ZmanlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxNzQ5NDIsImV4cCI6MjA2NTc1MDk0Mn0.bRJy5JUpPrBRmHIGmoHpHJKzHRf1_cQho76d2KD13jk'
     const supabase = createClient(supabaseUrl, supabaseKey)
 
-    const form = document.getElementById('registroForm')
-    const mensaje = document.getElementById('mensaje')
+    // Función para cargar y mostrar los registros con mejor manejo de errores
+    async function cargarUsuarios() {
+      try {
+        console.log('Iniciando carga de usuarios...')
+        const { data: usuarios, error } = await supabase
+          .from('users')
+          .select('*')
+          .order('creado_en', { ascending: false })
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault()
+        if (error) {
+          throw error
+        }
 
-      const nombre = document.getElementById('nombre').value
-      const correo = document.getElementById('correo').value
+        const usuariosLista = document.getElementById('usuariosLista')
+        if (!usuariosLista) {
+          console.error('Elemento usuariosLista no encontrado')
+          return
+        }
 
-      const { data, error } = await supabase
-        .from('users')
-        .insert([{ nombre, correo }])
+        usuariosLista.innerHTML = ''
 
-      if (error) {
-        mensaje.textContent = 'Error al registrar: ' + error.message
-        mensaje.style.color = 'red'
-      } else {
-        Swal.fire({
-          title: "Exito!",
-          text: "Usuario registrado con éxito!",
-          icon: "success"
-        });
+        if (usuarios.length === 0) {
+          usuariosLista.innerHTML = '<li>No hay usuarios registrados</li>'
+          return
+        }
 
-        form.reset()
+        usuarios.forEach(usuario => {
+          const li = document.createElement('li')
+          li.textContent = `${usuario.nombre || 'Sin nombre'} - ${usuario.correo || 'Sin correo'}`
+          usuariosLista.appendChild(li)
+        })
+
+        console.log('Usuarios cargados correctamente')
+      } catch (error) {
+        console.error('Error en cargarUsuarios:', error)
+        const mensaje = document.getElementById('mensaje')
+        if (mensaje) {
+          mensaje.textContent = `Error al cargar usuarios: ${error.message}`
+          mensaje.style.color = 'red'
+        }
       }
-    })
+    }
+
+    // Inicialización después de que todo el DOM esté listo
+    function initApp() {
+      console.log('Inicializando aplicación...')
+
+      const form = document.getElementById('registroForm')
+      if (!form) {
+        console.error('Formulario no encontrado')
+        return
+      }
+
+      // Cargar usuarios al iniciar
+      cargarUsuarios()
+
+      // Manejador del formulario
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault()
+
+        const nombre = document.getElementById('nombre')?.value
+        const correo = document.getElementById('correo')?.value
+
+        if (!nombre || !correo) {
+          const mensaje = document.getElementById('mensaje')
+          if (mensaje) {
+            mensaje.textContent = 'Por favor complete todos los campos'
+            mensaje.style.color = 'red'
+          }
+          return
+        }
+
+        try {
+          const { error } = await supabase
+            .from('users')
+            .insert([{ nombre, correo }])
+
+          if (error) {
+            throw error
+          }
+
+          Swal.fire({
+            title: "Éxito!",
+            text: "Usuario registrado con éxito!",
+            icon: "success"
+          })
+
+          form.reset()
+          await cargarUsuarios()
+        } catch (error) {
+          console.error('Error al registrar:', error)
+          const mensaje = document.getElementById('mensaje')
+          if (mensaje) {
+            mensaje.textContent = 'Error al registrar: ' + error.message
+            mensaje.style.color = 'red'
+          }
+        }
+      })
+    }
+
+    // Usar load en lugar de DOMContentLoaded para módulos
+    window.addEventListener('load', initApp)
   </script>
 
 </section>
