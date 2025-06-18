@@ -31,10 +31,12 @@ function loadPage(pageName) {
   $.get(`templates/pages/${pageName}.html`)
     .done(html => {
       $('#content').html(html);
-      
-      // Actualiza URL sin recargar (SPA)
-      // history.pushState(null, '', `${pageName}`);
       history.pushState(null, '', `#${pageName}`);
+      
+      // Llama a mostrarContenido si está disponible
+      if (window.mostrarContenido) {
+        setTimeout(window.mostrarContenido, 50);
+      }
     })
     .fail(() => {
       $('#content').html('<p>Error cargando la página.</p>');
@@ -49,7 +51,7 @@ $(document).on('click', '[data-page]', function(e) {
 });
 
 // Manejar botón Atrás/Adelante
-$(window).on('popstate', () => {
+$(window).on('popstate', function() {
   const page = window.location.hash.replace('#', '') || 'home';
   loadPage(page);
 });
