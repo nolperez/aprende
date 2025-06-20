@@ -138,14 +138,25 @@
             <path
               d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z" />
           </svg>
-          <span class="flex-1 ms-3 whitespace-nowrap">Larevel</span>
+          <span class="flex-1 ms-3 whitespace-nowrap">Laravel</span>
+        </a>
+        <a href="#" id="irVistaFacturacion"
+          class="pagina-link flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+          <svg
+            class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+            <path
+              d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z" />
+          </svg>
+          <span class="flex-1 ms-3 whitespace-nowrap">Facturacion</span>
         </a>
       </nav>
     </div>
   </aside>
 
   <div class="p-4 sm:ml-64">
-    <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
+    <div id="contenidoCambiante"
+      class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
       <div id="editorContainer" class="space-y-4">
         <div>
           <label for="titulo" class="block text-gray-700 font-semibold mb-2">Página</label>
@@ -166,7 +177,40 @@
         </div>
 
       </div>
+    </div>
+    <div id="contenidoApiSunat"
+      class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14 hidden">
+      extension=gd
+      extension=zip
+      extension=soap
+      extension=openssl
+      2. Descargar E Instalar WKHTMLTOPDF
+      AQUÍ: CLICK
+      3. Clonar el repositorio
+      EN CORREO
+      AQUÍ: CLICK
+      4. Instalar dependencias de composer y npm en el proyecto
+      composer install
+      npm install (SI no se instala)
 
+      Ejecutar powershell como administrador
+      Ejecutar: Get-ExecutionPolicy
+      Si devuelve: Restricted
+      Ejecuta el siguiente comando en PowerShell con privilegios de administrador para permitir la ejecución de scripts
+      Set-ExecutionPolicy RemoteSigned
+      5. Duplicar el archivo .env
+      6. Ejecutar las seguientes instrucciones
+      php artisan key:generate
+      php artisan storage:link
+      7. Generar virtual host en apache
+      8. Cambiar la url del virtual host
+      9. En la variable WKHTMLTOPDF establecer la ruta de la carpeta de wkhtmltopdf
+      10. Ejecuta
+      npm run build
+      11. Ejecuta:
+      php artisan migrate
+      12. Finalmente ejecuta:
+      php artisan migrate:fresh --seed
     </div>
   </div>
 
@@ -292,6 +336,20 @@
       // 4. Evento para guardar
       guardarBtn.addEventListener('click', saveContent);
     });
+  </script>
+
+  <script>
+    const irVistaFacturacion = document.getElementById('irVistaFacturacion');
+    const contenidoCambiante = document.getElementById('contenidoCambiante');
+    const contenidoApiSunat = document.getElementById('contenidoApiSunat');
+
+    irVistaFacturacion.addEventListener('click', () => {
+      // Añade la clase hidden para ocultar el contenido
+      contenidoCambiante.classList.add('hidden');
+      contenidoApiSunat.classList.remove('hidden');
+    });
+
+
   </script>
 
 </body>
